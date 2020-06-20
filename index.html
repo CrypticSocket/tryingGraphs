@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+</head>
+<body>
+    
+    <canvas id="myChart" width="400" height="200"></canvas>
+
+    <script>
+        
+        const xlabels = []
+        const ydata = []
+        chart()
+        async function chart(){
+            await getData();
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: xlabels,
+                    datasets: [{
+                        label: 'Count and Date',
+                        data: ydata,
+                        backgroundColor:'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        fill : 0,
+                        borderWidth: 1
+                    }]
+                },
+            });
+        }
+
+        async function getData()
+        {
+            const response = await fetch('data.csv');
+            const data = await response.text();
+            
+            const rows = data.split('\r\n').slice(1)
+            rows.forEach(
+                element =>
+                {
+                    row=element.split(',')
+                    const date = row[0]
+                    xlabels.push(date)
+                    const count = row[3]
+                    ydata.push(count)
+                    console.log(date, count)
+                }
+            )
+        }
+    </script>
+</body>
+</html>
